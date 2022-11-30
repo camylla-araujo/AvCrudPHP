@@ -39,6 +39,29 @@ class ProfessorController extends AbstractController
 
     public function editar(): void
     {
+        $id = $_GET['id'];
+        $rep = new ProfessorRepository();
+        $professor = $rep->buscarUm($id);
+        $this->render('professor/editar', [$aluno]);
+        if (false === empty($_POST)) {
+            $professor->nome = $_POST['nome'];
+            $aluno->cpf = $_POST['cpf'];
+    
+            try {
+                $rep->atualizar($professor, $id);
+            } catch (Exception $exception) {
+                if (true === str_contains($exception->getMessage(), 'nome')) {
+                    die('Professor já cadastrado');
+                }
+    
+                if (true === str_contains($exception->getMessage(), 'cpf')) {
+                    die('CPF já cadastrado');
+                }
+    
+                die('Vish, aconteceu um erro');
+            }
+            $this->redirect('/professor/listar');
+        }
         
     }
 
