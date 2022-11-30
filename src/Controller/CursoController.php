@@ -49,26 +49,14 @@ class CursoController extends AbstractController
         $curso->categoria_id = intval($_POST['categoria']);
 
         $this->repository->inserir($curso);
-        // try {
-        // } catch (Exception $exception) {
-        //     var_dump($exception->getMessage());
-        //     // if (true === str_contains($exception->getMessage(), 'cpf')) {
-        //     //     die('CPF ja existe');
-        //     // }
-
-        //     // if (true === str_contains($exception->getMessage(), 'email')) {
-        //     //     die('Email ja existe');
-        //     // }
-
-        //     die('Vish, aconteceu um erro');
-        // }
-
         $this->redirect('/cursos/listar');
     }
 
     public function excluir(): void
     {
-        echo "Pagina de excluir";
+        $id = $_GET['id'];
+        $this->repository->excluir($id);
+        $this->redirect("\cursos\listar");
     }
 
     public function editar(): void
@@ -91,47 +79,54 @@ class CursoController extends AbstractController
             $this->redirect('/cursos/listar');
         }
     }
-    public function relatorio(): void
+    // public function relatorio(): void
+    // {
+    //     $hoje = date('d/m/Y');
+
+    //     $cursos = $this->repository->buscarTodos();
+
+    //     $design = "
+    //         <h1>Relatorio de Cursos</h1>
+    //         <hr>
+    //         <em>Gerado em {$hoje}</em>
+
+    //         <table border='1' width='100%' style='margin-top: 30px;'>
+    //             <thead>
+    //                 <tr>
+    //                     <th>ID</th>
+    //                     <th>Nome</th>
+    //                 </tr>
+    //             </thead>
+    //             <tbody>
+    //                 <tr>
+    //                     <td>{$cursos[0]->id}</td>
+    //                     <td>{$cursos[0]->nome}</td>
+    //                 </tr>
+
+    //                 <tr>
+    //                     <td>{$cursos[1]->id}</td>
+    //                     <td>{$cursos[1]->nome}</td>
+    //                 </tr>
+
+    //                 <tr>
+    //                     <td>{$cursos[2]->id}</td>
+    //                     <td>{$cursos[2]->nome}</td>
+    //                 </tr>
+    //             </tbody>
+    //         </table>
+    //     ";
+
+    //     $dompdf = new Dompdf();
+    //     $dompdf->setPaper('A4', 'portrait'); 
+    //     $dompdf->loadHtml($design);
+    //     $dompdf->render();
+    //     $dompdf->stream('relatorio-cursos.pdf', ['Attachment' => 0]);
+    // }
+    public function pdf():void
     {
-        $hoje = date('d/m/Y');
-
-        $cursos = $this->repository->buscarTodos();
-
-        $design = "
-            <h1>Relatorio de Cursos</h1>
-            <hr>
-            <em>Gerado em {$hoje}</em>
-
-            <table border='1' width='100%' style='margin-top: 30px;'>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{$cursos[0]->id}</td>
-                        <td>{$cursos[0]->nome}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{$cursos[1]->id}</td>
-                        <td>{$cursos[1]->nome}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{$cursos[2]->id}</td>
-                        <td>{$cursos[2]->nome}</td>
-                    </tr>
-                </tbody>
-            </table>
-        ";
-
-        $dompdf = new Dompdf();
-        $dompdf->setPaper('A4', 'portrait'); 
-        $dompdf->loadHtml($design);
-        $dompdf->render();
-        $dompdf->stream('relatorio-cursos.pdf', ['Attachment' => 0]);
+       $dados = $this->repository->buscarTodos();
+       $this->relatorio("curso", [
+           'cursos' => $dados,
+       ]);
     }
 }

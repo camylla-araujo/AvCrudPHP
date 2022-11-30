@@ -16,19 +16,19 @@ class UserController extends AbstractController
         $this->repository = new UserRepository();
     }
 
-    public function list(): void
+    public function listar(): void
     {
         $users = $this->repository->findAll();
 
-        $this->render('user/list', [
+        $this->render('user/listar', [
             'users' => $users,
         ]);
     }
 
-    public function add(): void
+    public function cadastrar(): void
     {
         if (true === empty($_POST)) {
-            $this->render('user/add');
+            $this->render('user/cadastrar');
             return;
         }
 

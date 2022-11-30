@@ -63,7 +63,7 @@ class AlunoController extends AbstractController
 
     public function editar(): void
     {
-        $this->checkLogin();
+        // $this->checkLogin();
         $id = $_GET['id'];
         $rep = new AlunoRepository();
         $aluno = $rep->buscarUm($id);
@@ -102,47 +102,11 @@ class AlunoController extends AbstractController
 
     }
 
-    public function relatorio(): void
+    public function pdf():void
     {
-        $hoje = date('d/m/Y');
-
-        $alunos = $this->repository->buscarTodos();
-
-        $design = "
-            <h1>Relatorio de Alunos</h1>
-            <hr>
-            <em>Gerado em {$hoje}</em>
-
-            <table border='1' width='100%' style='margin-top: 30px;'>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{$alunos[0]->id}</td>
-                        <td>{$alunos[0]->nome}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{$alunos[1]->id}</td>
-                        <td>{$alunos[1]->nome}</td>
-                    </tr>
-
-                    <tr>
-                        <td>{$alunos[2]->id}</td>
-                        <td>{$alunos[2]->nome}</td>
-                    </tr>
-                </tbody>
-            </table>
-        ";
-
-        $dompdf = new Dompdf();
-        $dompdf->setPaper('A4', 'portrait'); // tamanho da pagina
-        $dompdf->loadHtml($design); //carrega o conteudo do PDF
-        $dompdf->render(); //aqui renderiza 
-        $dompdf->stream('relatorio-alunos.pdf', ['Attachment' => 0]); //é aqui que a magica acontece
+       $dados = $this->repository->buscarTodos();
+       $this->relatorio("aluno", [
+           'alunos' => $dados,
+       ]);
     }
 }

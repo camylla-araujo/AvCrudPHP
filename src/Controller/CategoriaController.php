@@ -89,34 +89,11 @@ class CategoriaController extends AbstractController
             return $resultado;
     }
 
-    public function relatorio(): void
+    public function pdf():void
     {
-        $hoje = date('d/m/Y');
-        $categoria = $this->repository->buscarTodos();
-        $design = "
-        <h1>Relatorio de Categoria</h1>
-        <hr>
-        <em>Gerando em {$hoje}</em>
-        <hr>
-        <table border='1' width='100%' style='margin-top: 30px;'>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Vagas</th>
-                    <th>Localidade</th>
-                </tr>
-            </thead>
-            <tbody>
-            ".$this->redirecionar($categoria)."
-            </tbody>
-        </table>
-        ";
-
-        $dompdf = new Dompdf();
-        $dompdf->setPaper('A4', 'portrait'); 
-        $dompdf->loadHtml(($design)); 
-        $dompdf->render();
-        $dompdf->stream('Relatorio-Categorias.pdf', ['Attachment' => 0]);
+       $dados = $this->repository->buscarTodos();
+       $this->relatorio("categoria", [
+           'categorias' => $dados,
+       ]);
     }
 }
