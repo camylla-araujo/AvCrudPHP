@@ -26,7 +26,31 @@ class ProfessorController extends AbstractController
 
     public function cadastrar(): void
     {
-        echo "Pagina de cadastrar";
+        if (true === empty($_POST)) {
+            $this->render('professor/cadastrar');
+            return;
+        }
+
+        $professor = new Professor();
+        $professor->nome = $_POST['nome'];
+        $professor->cpf = $_POST['cpf'];
+        
+
+        try {
+            $this->repository->inserir($professor);
+        } catch (Exception $exception) {
+            if (true === str_contains($exception->getMessage(), 'cpf')) {
+                die('CPF ja existe');
+            }
+
+            if (true === str_contains($exception->getMessage(), 'email')) {
+                die('Email ja existe');
+            }
+
+            die('Vish, aconteceu um erro');
+        }
+
+        $this->redirect('/professores/listar');
     }
 
     public function excluir(): void
